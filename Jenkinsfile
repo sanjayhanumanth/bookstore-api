@@ -31,13 +31,15 @@ pipeline {
 
                     docker create \
                         --name bookstore-api \
-                        -p 8081:8080 \
+                        -p 8081:9080 \
                         -v bookstore-data:/data \
                         -e DB_URL=jdbc:sqlite:/data/bookstore.db \
                         eclipse-temurin:21-jre \
                         java -jar /app.jar
 
-                    docker cp $(ls target/*.jar | grep -v original | head -n 1) bookstore-api:/app.jar
+                    JAR=$(ls target/*.jar | grep -v original | head -n 1)
+
+                    docker cp "$JAR" bookstore-api:/app.jar
 
                     docker start bookstore-api
                 '''
